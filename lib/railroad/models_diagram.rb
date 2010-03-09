@@ -20,8 +20,16 @@ class ModelsDiagram < AppDiagram
   # Process model files
   def generate
     STDERR.print "Generating models diagram\n" if @options.verbose
-    files = Dir.glob("app/models/**/*.rb")
-    files += Dir.glob("vendor/plugins/**/app/models/*.rb") if @options.plugins_models    
+    model_dirs = ['app/models']
+    model_dirs += ['"vendor/plugins/**/app/models'] if @options.plugins_models
+    root_dir = Dir.getwd
+    files = model_dirs.map do |model_dir|
+      Dir.glob(model_dir).map do |new_dir|
+        Dir.chdir(new_dir)
+        Dir.glob("**/*.rb")
+      end
+    end
+    files.flatten!
     files -= @options.exclude
     files.each do |f| 
       process_class extract_class_name(f).constantize

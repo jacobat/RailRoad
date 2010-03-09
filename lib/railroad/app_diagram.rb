@@ -83,7 +83,7 @@ class AppDiagram
   def extract_class_name(filename)
     #filename.split('/')[2..-1].join('/').split('.').first.camelize
     # Fixed by patch from ticket #12742
-    File.basename(filename).chomp(".rb").camelize
+    filename.chomp(".rb").camelize
   end
 
 end # class AppDiagram
